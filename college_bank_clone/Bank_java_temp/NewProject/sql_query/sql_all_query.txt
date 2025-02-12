@@ -1,0 +1,125 @@
+-- rg1 (Main Table)
+CREATE TABLE `rg1` (
+  `formno` varchar(20) NOT NULL,
+  `name` varchar(50) DEFAULT NULL,
+  `fname` varchar(30) DEFAULT NULL,
+  `dob` varchar(20) DEFAULT NULL,
+  `gender` varchar(20) DEFAULT NULL,
+  `email` varchar(40) DEFAULT NULL,
+  `marital` varchar(20) DEFAULT NULL,
+  `add1` varchar(50) DEFAULT NULL,
+  `city` varchar(25) DEFAULT NULL,
+  `state` varchar(25) DEFAULT NULL,
+  `pincode` varchar(20) DEFAULT NULL,
+  `pinnum` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`formno`)
+);
+
+-- rg2 (No Foreign Key)
+CREATE TABLE `rg2` (
+  `formno` varchar(20) DEFAULT NULL,
+  `religion` varchar(20) DEFAULT NULL,
+  `category` varchar(20) DEFAULT NULL,
+  `income` varchar(20) NOT NULL,
+  `education` varchar(20) DEFAULT NULL,
+  `occupation` varchar(20) DEFAULT NULL,
+  `pan` varchar(20) DEFAULT NULL,
+  `adhar` varchar(20) DEFAULT NULL,
+  `seniorCitizen` varchar(20) DEFAULT NULL,
+  `existingAccount` varchar(20) DEFAULT NULL
+);
+
+-- rg3 (No Foreign Key)
+CREATE TABLE `rg3` (
+  `formno` varchar(20) DEFAULT NULL,
+  `type` varchar(40) DEFAULT NULL,
+  `cardno` varchar(30) DEFAULT NULL,
+  `pinnum` varchar(10) DEFAULT NULL,
+  `facility` varchar(120) DEFAULT NULL,
+  KEY `idx_pinnum` (`pinnum`)
+);
+
+-- login (No Foreign Key)
+CREATE TABLE `login` (
+  `formno` varchar(20) DEFAULT NULL,
+  `cardno` varchar(30) DEFAULT NULL,
+  `pinnum` varchar(10) DEFAULT NULL,
+  `account_balance` varchar(100) DEFAULT NULL
+);
+
+-- account_balance (Foreign Key to rg1)
+CREATE TABLE `account_balance` (
+  `formno` varchar(20) DEFAULT NULL,
+  `balance` decimal(10,2) DEFAULT NULL,
+  KEY `formno` (`formno`),
+  CONSTRAINT `account_balance_ibfk_1` FOREIGN KEY (`formno`) REFERENCES `rg1` (`formno`)
+);
+
+-- investments (Foreign Key to rg1)
+CREATE TABLE `investments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `formno` varchar(20) DEFAULT NULL,
+  `investment_type` varchar(30) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `tenure` int DEFAULT NULL,
+  `expected_return` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `formno` (`formno`),
+  CONSTRAINT `investments_ibfk_1` FOREIGN KEY (`formno`) REFERENCES `rg1` (`formno`)
+);
+
+-- loans (Foreign Key to rg1)
+CREATE TABLE `loans` (
+  `loan_id` int NOT NULL AUTO_INCREMENT,
+  `formno` varchar(20) DEFAULT NULL,
+  `loan_type` varchar(50) DEFAULT NULL,
+  `amount` decimal(15,2) DEFAULT NULL,
+  `tenure` int DEFAULT NULL,
+  `repayment` decimal(15,2) DEFAULT NULL,
+  PRIMARY KEY (`loan_id`),
+  KEY `formno` (`formno`),
+  CONSTRAINT `loans_ibfk_1` FOREIGN KEY (`formno`) REFERENCES `rg1` (`formno`)
+);
+
+-- payments (Foreign Key to rg1)
+CREATE TABLE `payments` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `formno` varchar(20) DEFAULT NULL,
+  `payment_type` varchar(50) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `payment_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `formno` (`formno`),
+  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`formno`) REFERENCES `rg1` (`formno`)
+);
+
+-- support_requests (Foreign Key to rg1)
+CREATE TABLE `support_requests` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `formno` varchar(20) DEFAULT NULL,
+  `issue` varchar(255) DEFAULT NULL,
+  `request_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `formno` (`formno`),
+  CONSTRAINT `support_requests_ibfk_1` FOREIGN KEY (`formno`) REFERENCES `rg1` (`formno`)
+);
+
+-- transactions (Foreign Key to rg1, Cascade Delete)
+CREATE TABLE `transactions` (
+  `transaction_id` int NOT NULL AUTO_INCREMENT,
+  `formno` varchar(50) DEFAULT NULL,
+  `transaction_type` varchar(20) DEFAULT NULL,
+  `transaction_amount` double DEFAULT NULL,
+  `transaction_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`transaction_id`),
+  KEY `formno` (`formno`),
+  CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`formno`) REFERENCES `rg1` (`formno`) ON DELETE CASCADE
+);
+
+-- services (No Foreign Key)
+CREATE TABLE `services` (
+  `pin` varchar(10) DEFAULT NULL,
+  `date` varchar(50) DEFAULT NULL,
+  `type` varchar(20) DEFAULT NULL,
+  `amount` varchar(20) DEFAULT NULL
+);
